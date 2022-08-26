@@ -1,3 +1,8 @@
+*NeoDement added a script that allows the pointer to click on objects behind dithered overlays.
+
+
+*TODO: ADD OVERLAYS TO VOLCANO PLATFORMS ON RIGHT SIDE OF VOLCANO!!! WORLD WRAP COPIES WILL NEED TO EXIST TOO!!!
+
 
 *Files Needed*
 
@@ -187,7 +192,7 @@ mvto 5653 49529
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 1 7 8001
 
-attr 0
+attr 4
 
 mvto 5579 48990
 
@@ -197,7 +202,7 @@ mvto 5579 48990
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 1 8 8001
 
-attr 0
+attr 4
 
 mvto 4344 49148
 
@@ -207,7 +212,7 @@ mvto 4344 49148
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 1 9 8001
 
-attr 0
+attr 4
 
 mvto 4735 49171
 
@@ -217,7 +222,7 @@ mvto 4735 49171
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 1 10 8001
 
-attr 0
+attr 4
 
 mvto 5109 49191
 
@@ -227,7 +232,7 @@ mvto 5109 49191
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 1 11 8001
 
-attr 0
+attr 4
 
 mvto 5443 49189
 
@@ -321,7 +326,9 @@ mvto 3997 48002
 
 *World Tree Roots*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 17 8001
+*slightly lower plane than other overlays for the sake of the Pulsatilla Berries (little red ones, plane 8000)
+*that must grow in front of the bush but still go behind other overlays
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 17 7999
 
 attr 0
 
@@ -396,6 +403,7 @@ mvto 4165 48005
 
 
 *--///Hanging Bridge-*
+*(these are all plane 8000 instead of 8001, so we can draw little purple Ledum berries in front of it)
 
 
 
@@ -405,7 +413,7 @@ mvto 4165 48005
 
 *Hanging Bridge Piece Right*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 22 8001
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 22 8000
 
 attr 0
 
@@ -415,7 +423,7 @@ mvto 5698 48029
 
 *Left
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 29 8001
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 29 8000
 
 attr 0
 
@@ -423,9 +431,17 @@ mvto 4472 48057
 
 
 
+*Left Leafy Overhang
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 34 8000
+
+attr 0
+mvto 4702 48265
+
+
 *Left Rope
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 33 8002
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 33 8000
 
 attr 0
 
@@ -435,7 +451,7 @@ mvto 4180 47953
 
 *Left Middle
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 30 8001
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 30 8000
 
 attr 0
 
@@ -445,7 +461,7 @@ mvto 4808 48091
 
 *Right Middle
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 31 8001
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 31 8000
 
 attr 0
 
@@ -455,7 +471,7 @@ mvto 5144 48101
 
 *Right
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 32 8001
+new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 32 8000
 
 attr 0
 
@@ -480,6 +496,17 @@ new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 27 8001
 attr 0
 
 mvto 2242 48261
+*Dark Ocean Rocks (this copy needs to exist because of the world wrap)*
+
+setv va00 posl
+addv va00 game "C2toDS_WrapOffset"
+setv va01 post
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 27 8001
+
+attr 0
+
+mvto va00 va01
 
 
 
@@ -503,23 +530,27 @@ mvto 3277 48214
 
 
 
-*Ocean Tube*
+
+
+
+*Ocean Tube Left*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 13 8001
 
-attr 0
+attr 4
 
 mvto 2807 48552
 
 
 
-*Ocean Tube*
+*Ocean Tube Right*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays2" 1 14 8001
 
-attr 0
+attr 4
 
 mvto 3203 48552
+
 
 
 
@@ -747,7 +778,7 @@ mvto 7389 48652
 
 *Dungeon Fire Right*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 27 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 27 1
 
 attr 0
 
@@ -755,7 +786,7 @@ mvto 7607 48672
 
 emit 2 0.0500
 
-frat 3
+frat 2
 
 anim [0 1 2 3 4 255]
 
@@ -763,7 +794,7 @@ anim [0 1 2 3 4 255]
 
 *Dungeon Fire Middle*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 22 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 22 1
 
 attr 0
 
@@ -771,7 +802,7 @@ mvto 7238 48671
 
 emit 2 0.0500
 
-frat 3
+frat 2
 
 anim [0 1 2 3 4 255]
 
@@ -779,7 +810,7 @@ anim [0 1 2 3 4 255]
 
 *Dungeon Fire Left*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 17 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Dungeon" 5 17 1
 
 attr 0
 
@@ -787,7 +818,7 @@ mvto 6923 48672
 
 emit 2 0.0500
 
-frat 3
+frat 2
 
 anim [0 1 2 3 4 255]
 
@@ -801,7 +832,7 @@ anim [0 1 2 3 4 255]
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 0 8000
 
-attr 0
+attr 4
 
 mvto 4151 49930
 
@@ -826,18 +857,31 @@ attr 0
 mvto 9410 48354
 
 
-
+*todo: (much like the one below, this needs to taller/have a separate overlay above (its a volcano piece))
 *Submarine overlay*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 26 8000
 
 attr 0
 
-mvto 9106 48192
+mvto 754 48192
+
+*Volcano Walkway overlay (this copy needs to exist because of the world wrap)*
+
+setv va00 posl
+addv va00 game "C2toDS_WrapOffset"
+setv va01 post
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 26 8000
+
+attr 0
+
+mvto va00 va01
 
 
 
 *!!! I don't undersatnd this one...  Look into it... :S!!!*
+* ^? todo: maybe make this overlay larger though so it doesn't cut in when tall creatures walk through it
 
 *Volcano Walkway overlay*
 
@@ -845,7 +889,20 @@ new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 23 8000
 
 attr 0
 
-mvto 10032 48056
+mvto 1680 48056
+
+*Volcano Walkway overlay (this copy needs to exist because of the world wrap)*
+
+setv va00 posl
+addv va00 game "C2toDS_WrapOffset"
+setv va01 post
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 23 8000
+
+attr 0
+
+mvto va00 va01
+
 
 
 
@@ -877,7 +934,7 @@ attr 0
 
 mvto 9605 49242
 
-frat 5
+frat 2
 
 *emit 2 10.2
 
@@ -893,7 +950,7 @@ attr 0
 
 mvto 9262 48864
 
-frat 5
+frat 2
 
 
 
@@ -905,7 +962,7 @@ attr 0
 
 mvto 9576 48864
 
-frat 5
+frat 2
 
 
 
@@ -927,7 +984,7 @@ attr 0
 
 mvto 8043 49078
 
-frat 5
+frat 2
 
 
 
@@ -939,7 +996,7 @@ attr 0
 
 mvto 8584 49078
 
-frat 5
+frat 2
 
 
 
@@ -951,7 +1008,7 @@ attr 0
 
 mvto 8484 49079
 
-frat 5
+frat 2
 
 
 
@@ -963,7 +1020,7 @@ attr 0
 
 mvto 7971 49070
 
-frat 5
+frat 2
 
 
 
@@ -987,7 +1044,7 @@ attr 0
 
 mvto 4922 49698
 
-frat 1.5
+frat 2
 
 anim [0 1 2 3 4 255]
 
@@ -1003,7 +1060,7 @@ attr 0
 
 mvto 4766 49873
 
-frat 1.5
+frat 2
 
 anim [0 1 2 3 4 255]
 
@@ -1011,7 +1068,7 @@ anim [0 1 2 3 4 255]
 
 
 
-*WaterWheel Dirt Overlway*
+*WaterWheel Dirt Overlay*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 12 8000
 
@@ -1021,7 +1078,7 @@ mvto 4642 49743
 
 
 
-*WaterWheel Leafy Rock Overlway*
+*WaterWheel Leafy Rock Overlay*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 13 8000
 
@@ -1057,15 +1114,16 @@ mvto 8395 48240
 
 
 
-*!!!Add Sounds to this one!!!*
 
 *Incubator Room Waterfall*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays" 6 17 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays" 6 17 1
 
 attr 0
 
 mvto 6420 48333
+
+frat 2
 
 anim [0 1 2 3 4 5 255]
 
@@ -1077,23 +1135,21 @@ sndl "pool"
 
 new: simp 1 8 50200 "moe_C2toDS_OverlaysJungle" 3 17 8000
 
-attr 0
+attr 4
 
 mvto 6440 48460
 
-frat 3
+frat 2
 
 anim [0 1 2 255]
 
 
 
-*Incubator Room Waterfall Overlay*
+*Incubator Room Waterfall Pond Overlay*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 39 8000
 
-attr 0
-
-mvto 6430 48488
+attr 4
 
 mvto 6431 48488
 
@@ -1314,9 +1370,6 @@ frat 2
 anim [0 1 2 3 4 255]
 
 
-
-
-
 *SoundScapes for Waterfall*
 
 new: simp 1 8 50200 "moe_C2toDS_WaterfallSoundscapes" 1 0 1
@@ -1336,7 +1389,6 @@ sndl "waf2"
 
 
 
-
 *!!! Swamp Overlays! !!!*
 
 *swmp*
@@ -1344,8 +1396,12 @@ sndl "waf2"
 *Pipe*
 
 new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 28 1000
+*new: simp 1 8 50200 "moe_C2toDS_Overlays" 1 28 8001
 
-attr 0
+*todo: plane of this pipe is weird. some of it's meant to be in foreground, some of it's meant to be in the background.
+*this will eventually be fixed when the room is re-mapped, the pipe needs to not be walkable like in C2 for it to make sense.
+
+attr 4
 
 mvto 6782 49007
 
@@ -1471,13 +1527,16 @@ mvto 3552 49761
 
 
 
-*Wooden Box*
-
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 1 2 1000
-
-attr 0
-
-mvto 2253 49843
+*there is no reason for this to exist because nothing should ever be drawn behind it
+**Wooden Box*
+*
+*new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 1 2 1000
+*
+*attr 0
+*
+*mvto 2253 49843
+**cmrt 0
+**dcor 1
 
 
 
@@ -1505,15 +1564,15 @@ mvto 2138 49394
 
 *Massive Mixer Anim*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 92 10
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 92 1
 
 attr 0
 
 mvto 2693 49148
 
-frat 10
+frat 6
 
-anim [0 1 2 255]
+anim [0 1 2 1 0 255]
 
 
 
@@ -1521,7 +1580,7 @@ anim [0 1 2 255]
 
 *Yellow Bubblies*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 8 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 8 1
 
 attr 0
 
@@ -1535,7 +1594,7 @@ anim [0 1 2 3 4 5 6 7 8 9 255]
 
 *Red Dripper*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 55 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 55 1
 
 attr 0
 
@@ -1549,7 +1608,7 @@ anim [0 1 2 3 4 5 6 7 8 9 8 7 6 255]
 
 *Green Bubbler*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 74 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 74 1
 
 attr 0
 
@@ -1563,7 +1622,7 @@ anim [0 1 2 3 4 5 6 7 8 9 255]
 
 *Bubbly Tanks*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 39 10
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 39 2
 
 attr 0
 
@@ -1579,13 +1638,13 @@ anim [0 1 2 3 4 5 6 7 8 9 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 5 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 5 1
 
 attr 0
 
 mvto 2233 49367
 
-frat 5
+frat 2
 
 emit 2 0.1500
 
@@ -1597,13 +1656,13 @@ anim [0 1 2 1 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 24 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 24 1
 
 attr 0
 
 mvto 2654 49479
 
-frat 5
+frat 2
 
 emit 2 0.0300
 
@@ -1615,13 +1674,13 @@ anim [0 1 2 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 71 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 71 1
 
 attr 0
 
 mvto 2337 49483
 
-frat 5
+frat 2
 
 emit 2 0.0300
 
@@ -1633,7 +1692,7 @@ anim [0 1 2 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 33 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 33 1
 
 attr 0
 
@@ -1651,7 +1710,7 @@ anim [0 1 2 3 4 5 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 65 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 65 1
 
 attr 0
 
@@ -1669,13 +1728,13 @@ anim [0 1 2 3 4 5 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 27 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 27 1
 
 attr 0
 
 mvto 3136 49769
 
-frat 3
+frat 2
 
 emit 2 0.3300
 
@@ -1687,13 +1746,13 @@ anim [0 1 2 3 4 5 255]
 
 *!!!This should emit heat!!!
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 49 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 6 49 1
 
 attr 0
 
 mvto 3434 49769
 
-frat 3
+frat 2
 
 emit 2 0.3300
 
@@ -1721,13 +1780,13 @@ anim [0 1 2 3 4 5 255]
 
 *Swamp L*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 129 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 129 1
 
 attr 0
 
 mvto 6936 49875
 
-frat 3
+frat 8
 
 emit 2 0.3300
 
@@ -1737,13 +1796,13 @@ anim [0 1 2 3 4 5 6 7 8 9 10 11 12 13 255]
 
 *Swamp LM*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 115 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 115 1
 
 attr 0
 
 mvto 7134 49875
 
-frat 3
+frat 8
 
 emit 2 0.3300
 
@@ -1753,13 +1812,13 @@ anim [0 1 2 3 4 5 6 7 8 9 10 11 12 13 255]
 
 *Swamp M*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 143 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 143 1
 
 attr 0
 
 mvto 7332 49875
 
-frat 3
+frat 8
 
 emit 2 0.3300
 
@@ -1769,13 +1828,13 @@ anim [0 1 2 3 4 5 6 7 8 9 10 11 12 13 255]
 
 *Swamp R*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 101 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 14 101 1
 
 attr 0
 
 mvto 7528 49875
 
-frat 3
+frat 8
 
 emit 2 0.3300
 
@@ -1785,28 +1844,198 @@ anim [0 1 2 3 4 5 6 7 8 9 10 11 12 13 255]
 
 
 
-
-
 *!!!!Meters*  - I don't like these, they don't look good.!!!!*
 
-new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 18 500
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 10 18 1
 
 attr 0
 
 mvto 3313 49076
 
-frat 10
+frat 2
 
 anim [0 1 2 3 4 5 255]
 
 
-scrp 1 8 50200 10
 
-	tick 0
 
-	stop
+
+*Lights above Frog Pond*
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 2 157 1
+
+attr 0
+
+mvto 2851 48801
+
+pose 1
+
+setv ov00 0
+
+tick 1
+
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 3 157 1
+
+attr 0
+
+mvto 2955 48789
+
+pose 2
+
+setv ov00 1
+
+tick 1
+
+
+new: simp 1 8 50200 "moe_C2toDS_Overlays_Labs" 4 157 1
+
+attr 0
+
+mvto 3045 48790
+
+pose 3
+
+setv ov00 2
+
+tick 1
+
+
+
+
+
+
+*Timer Script - Currently only used by Lights above Frog Pond (OV00 0, 1 and 2)
+
+scrp 1 8 50200 9
+
+	doif ov00 < 3
+
+*randomly blink
+		doif pose <> 0
+			pose 0
+
+			tick rand 3 5
+		else
+
+*0 - Left Light above Frog Pond
+			doif ov00 = 0
+				pose 1
+*1 - Mid Light above Frog Pond
+			elif ov00 = 1
+				pose 2
+*2 - Right Light above Frog Pond
+			elif ov00 = 2
+				pose 3
+			endi
+
+			setv va00 rand 2 20
+			mulv va00 10
+			tick va00
+
+		endi
+	endi
+
 
 endm
+
+
+
+*redundant script that was precluding the creation of the Lights above the Frog Pond
+*scrp 1 8 50200 10
+*
+*	tick 0
+*
+*	stop
+*
+*endm
+
+
+
+*clicking on scenery which is set to be activateable calls a special script on the pointer to temporarily offset its position by 1 pixel to the left and fake a mouse click.
+*the purpose of this is to stop the frustration of a click seeming to not register when clicking a dithered transparent object (such as any of the glass tubes)
+
+scrp 1 8 50200 1
+
+	inst
+
+*set the OWNR in _P1_ so we can check against it in the pointer script
+	mesg wrt+ pntr 50200 ownr 0 0
+
+endm
+
+
+*special pointer script so we can fake the pointer clicking things!
+*(only handles clicks directly on objects, no pat: butts)
+
+scrp 2 1 1 50200
+
+*_P1_ should be the OWNR of the script this was called from. if it isn't an agent, just set it to NULL.
+	doif type _p1_ < 3
+		seta _p1_ null
+	endi
+
+	inst
+
+	mvby -1 0
+
+	targ hots
+
+*make sure targ exists and isn't the thing we just clicked on (_P1_)
+	doif targ <> null and targ <> _p1_
+
+*make sure it's a Simple, Compound or Vehicle Agent
+		doif type targ = 3 or type targ = 5 or type targ = 6
+
+*make sure it's Activateable
+
+			setv va04 attr
+			andv va04 4
+			doif va04 = 4
+
+*check CLAC state.
+
+*do nothing
+				doif clac = -1
+
+*handle CLIK events
+				elif clac = -2
+
+*set VA01 to which CLIK action number is going to be performed next
+					setv va01 clik 0
+
+*clik 0 should only return 1 2 or 3
+					doif va01 > 0 and va01 < 4
+						mesg writ targ clik va01
+					endi
+
+*send the correct Message Number according to CLAC
+				else
+					mesg writ targ clac
+				endi
+
+*if any of the above checks failed, don't animate the pointer click.
+			else
+
+				targ pntr
+
+*and don't animate it if it's in the middle of some other anim
+				doif pose < 2
+					pose 0
+				endi
+
+			endi
+		endi
+	endi
+
+	targ pntr
+
+	mvby 1 0
+
+endm
+
+
+
 
 rscr
 
@@ -1823,5 +2052,3 @@ loop
 	scrx 1 8 50200 va00
 
 untl va00 ge 2000
-
-

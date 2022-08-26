@@ -1,6 +1,10 @@
 * 2 18 50208 - Barnacle Egg
 * 2 15 50205 - Barnacle
 
+
+*NeoDement moved an ATTR change (enabling physics) from the Drop script to the Pickup script to hopefully have the same effect but prevent an invalid map position error.
+
+
 reps rand 3 4
 
 	new: simp 2 18 50208 "moe_C2toDS_barnacles" 11 55 rand 1000 3000
@@ -55,7 +59,7 @@ scrp 2 18 50208 10
 
 	attr 199
 
-	bhvr 63
+	bhvr 48
 
 	tick rand 32 45
 
@@ -381,7 +385,7 @@ scrp 2 18 50208 12
 
 	doif crea from eq 1
 
-		stim writ from 90 1
+		stim writ from 80 1
 
 	endi
 
@@ -406,7 +410,7 @@ scrp 2 15 50205 10
 
 	aero 5
 
-	bhvr 32
+	bhvr 59
 
 	tick rand 360 1000
 
@@ -421,6 +425,11 @@ endm
 *activate 1
 
 scrp 2 15 50205 1
+
+	doif crea from eq 1
+		stim writ from 86 1
+	endi
+
 
 	doif pose gt 0
 
@@ -442,11 +451,23 @@ endm
 
 scrp 2 15 50205 2
 
+	doif crea from eq 1
+		stim writ from 86 1
+	endi
+
+	mesg writ ownr 0
+
 endm
 
 *hit
 
 scrp 2 15 50205 3
+
+	doif crea from eq 1
+		stim writ from 87 1
+	endi
+
+	mesg writ ownr 0
 
 endm
 
@@ -455,6 +476,7 @@ endm
 scrp 2 15 50205 4
 
 	lock
+inst
 
 	doif pose gt 0
 
@@ -468,27 +490,37 @@ scrp 2 15 50205 4
 
 		untl pose eq 0
 
-	endi
+	endi	
 
 	base 0
 
 	pose 0
+	
+	*(from drop script)
+		attr 199
+
+	accg 4
+
+	aero 5
+	
 
 	unlk
 
 endm
 
-*drop
+*moved to pickup script for now
+**drop
+*
+*scrp 2 15 50205 5
+*
+*	attr 199
+*
+*	accg 4
+*
+*	aero 5
+*
+*endm
 
-scrp 2 15 50205 5
-
-	attr 199
-
-	accg 4
-
-	aero 5
-
-endm
 
 *collision
 
@@ -502,7 +534,7 @@ scrp 2 15 50205 9
 
 
 
-	doif game "TMOD" lt 3
+	doif time lt 3
 
 		doif pose lt 10
 
@@ -514,7 +546,7 @@ scrp 2 15 50205 9
 
 		endi
 
-	elif game "TMOD" ge 3
+	elif time ge 3
 
 		doif pose gt 0
 
@@ -538,7 +570,10 @@ endm
 
 scrp 2 15 50205 12
 
-	stim writ from 77 .25
+
+	doif crea from eq 1
+		stim writ from 80 1
+	endi
 
 	snde "eat1"
 

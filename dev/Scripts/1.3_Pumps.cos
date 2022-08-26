@@ -1,8 +1,12 @@
 * 2 25 50202 - Pump
 
+*NeoDement moved FRAT commands into the Constructor Script
+
+
+
 *Burrow
 
-new: simp 2 25 50202 "moe_C2toDS_pump" 11 0 rand 1000 3000
+new: simp 2 25 50202 "moe_C2toDS_pump" 11 0 5600
 
 mvto 6706 48393
 
@@ -10,7 +14,7 @@ mvto 6706 48393
 
 *Treehouse
 
-new: simp 2 25 50202 "moe_C2toDS_pump" 11 0 rand 1000 3000
+new: simp 2 25 50202 "moe_C2toDS_pump" 11 0 5600
 
 mvto 5072 49795
 
@@ -20,7 +24,10 @@ scrp 2 25 50202 10
 
 	attr 4
 
-	bhvr 31
+	bhvr 16
+	
+	*C2 framerate
+	frat 2
 
 endm
 
@@ -31,41 +38,44 @@ scrp 2 25 50202 9
 endm
 
 *activate 1
-
+* if the hand activates this, it cools off creatures touching it.
+* creatures can't push this, they can only drink it (which also cools them down)
 scrp 2 25 50202 1
+	inst
+	doif from eq pntr
+		etch 4 0 0
+			snde "drnk"
+*decrease hotness
+			chem 153 -.25
+*increase coolness
+			chem 152 .15
+*Water
+			chem 33 .25
+		next
+	endi
+	
+	sndc "wat1"
+	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
+
+endm
+
+scrp 2 25 50202 12
+
+	inst
 
 	doif crea from eq 1
-
 		seta va00 from
-
 		snde "drnk"
-
-		inst
-
 		targ va00
-
 *decrease hotness
-
 		chem 153 -.25
-
 *increase coolness
-
 		chem 152 .15
-
 *Water
-
 		chem 33 .25
-
-		slow
-
-		targ ownr
-
 	endi
 
-	frat 3
-
 	sndc "wat1"
-
 	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
 
 endm
@@ -78,45 +88,7 @@ scrp 2 25 50202 6
 
 endm
 
-*eat
 
-scrp 2 25 50202 12
-
-	doif crea from eq 1
-
-		seta va00 from
-
-		snde "drnk"
-
-		inst
-
-		targ va00
-
-*decrease hotness
-
-		chem 153 -.25
-
-*increase coolness
-
-		chem 152 .15
-
-*Water
-
-		chem 33 .25
-
-		slow
-
-		targ ownr
-
-	endi
-
-	frat 3
-
-	sndc "wat1"
-
-	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
-
-endm
 
 
 
@@ -156,10 +128,7 @@ scrp 2 25 50202 0
 
 	endi
 
-	frat 3
-
 	sndc "wat1"
-
 	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
 
 endm
@@ -196,10 +165,8 @@ scrp 2 25 50202 2
 
 	endi
 
-	frat 3
 
 	sndc "wat1"
-
 	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
 
 endm
@@ -236,10 +203,7 @@ scrp 2 25 50202 3
 
 	endi
 
-	frat 3
-
 	sndc "wat1"
-
 	anim [ 0 1 2 3 4 5 6 7 8 9 10 9 8 7 6 5 4 3 2 1 0]
 
 endm

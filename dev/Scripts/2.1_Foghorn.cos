@@ -15,43 +15,86 @@
 * Pretty much straight-converted from c2. 
 
 
+*NeoDement made this pickupable, added a hit script and fixed some potential FRAT issues.
+
+
 
 new: comp 2 21 50212 "moe_C2toDS_foghorn" 34 0 50
 
-attr 4
+*on the dock to the left of the volcano
+mvto 9090 48145
 
-rnge 500
 
-mvto 9090 48149
 
-frat 3
+*Foghorn Constructor Script
 
-bhvr 3
+scrp 2 21 50212 10
 
-pat: dull 1 "moe_C2toDS_foghorn" 1 48 0 50
+*attr 4
 
-pat: dull 2 "moe_C2toDS_foghorn" 4 204 0 50
+*Mouseable + Activateable + Suffer Collisions + Suffer Physics
+	attr 198
 
-pat: dull 3 "moe_C2toDS_foghorn" 7 176 0 50
+*Activate 1 + Activate 2 + Hit
+	bhvr 11
 
-pat: dull 4 "moe_C2toDS_foghorn" 10 152 0 50
+
+*physics!
+	accg 2
+
+	fric 100
+
+	perm 51
+
+	elas 0
+
+
+	puhl -1 155 55
+
+	rnge 500
+
+
+	pat: dull 1 "moe_C2toDS_foghorn" 1 48 0 50
+
+	pat: dull 2 "moe_C2toDS_foghorn" 4 204 0 50
+
+	pat: dull 3 "moe_C2toDS_foghorn" 7 176 0 50
+
+	pat: dull 4 "moe_C2toDS_foghorn" 10 152 0 50
+
+
+*C2 Framerate
+	frat 2
+	part 1
+	frat 2
+	part 2
+	frat 2
+	part 3
+	frat 2
+	part 4
+	frat 2
+
+endm
 
 
 
 
 scrp 2 21 50212 1
 
-	lock
+	inst
 
-	stim writ from 97 1
+	doif crea from eq 1
+		stim writ from 97 1
+	endi
 
 	setv va00 posl
 
 	setv va01 post
 
-	part 1
+	lock
+	slow
 
-	frat 2
+	part 1
 
 	anim [ 0 1 2 1 255]
 
@@ -72,8 +115,6 @@ scrp 2 21 50212 1
 		setv va03 rand 2 4
 
 		part va03
-
-		frat 2
 
 		anim [ 0 1 2 1 0 ]
 
@@ -143,7 +184,7 @@ endm
 
 scrp 1 23 50212 10
 
-	frat rand 2 3
+	frat rand 2 4
 
 	reps rand 10 25
 
@@ -165,7 +206,7 @@ endm
 
 scrp 1 23 50213 10
 
-	frat rand 3 6
+	frat rand 2 6
 
 	anim [ 0 1 2 ]
 
@@ -189,97 +230,28 @@ endm
 
 scrp 2 21 50212 2
 
-	lock
+	inst
 
-	stim writ from 97 1
-
-	setv va00 posl
-
-	setv va01 post
-
-	part 1
-
-	anim [ 0 1 2 1 255]
-
-	setv va02 rand 0 1
-
-	doif va02 eq 0
-
-		snde "hrn1"
-
-	else
-
-		snde "hrn2"
-
+	doif crea from eq 1
+		stim writ from 97 1
 	endi
 
-	reps 5
+	mesg writ ownr 0
 
-		setv va03 rand 2 4
+endm
 
-		part va03
 
-		anim [ 0 1 2 1 0 ]
+scrp 2 21 50212 3
 
-		wait 1
+	inst
 
-		inst
+*Stimulate the creature with "Played with toy"
+	doif crea from eq 1
+		stim writ from 97 1
+	endi
 
-		new: simp 1 23 50212 "moe_C2toDS_foghorn" 12 13 7000
-
-		attr 16
-
-		setv va02 rand 0 2
-
-		mulv va02 4
-
-		base va02
-
-		pose 0
-
-		mvto va00 va01
-
-		slow
-
-		setv va02 rand -2 -1
-
-		setv vely va02
-
-		setv velx rand -3 3
-
-		mesg writ targ 8
-
-		setv va04 va00
-
-		setv va06 rand 30 80
-
-		addv va04 va06
-
-		setv va05 va01
-
-		inst
-
-		new: simp 1 23 50213 "moe_C2toDS_foghorn" 9 25 9000
-
-		attr 64
-
-		mvto va04 va05
-
-		setv va02 rand 0 -1
-
-		setv velx 1
-
-		slow
-
-		targ ownr
-
-	repe
-
-	part 1
-
-	pose 0
-
-	unlk
+	sndc "hit_"
+	velo rand -2 2 rand -4 -7
 
 endm
 
@@ -316,4 +288,3 @@ scrx 2 21 50212 2
 scrx 1 23 50212 10
 
 scrx 1 23 50213 10
-

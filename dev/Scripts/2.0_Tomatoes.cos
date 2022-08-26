@@ -1,9 +1,30 @@
 * 2 4 50200 - Tomato Plant
 * 2 8 50200 - Tomato
+* 2 23 50210 - Tomato Machine
 
 * Initial Conversion By Moe
 * Instinct friendliness and survivability edits by the one who screams i guess
+* Some fixes by NeoDement + added Tomato Machine
 * (if you worked on this file, feel free to add your name!)
+
+* Some guesses about what these OVs are (on the plant):
+* ov01 - Agent representing Left tomato
+* ov02 - Agent representing Middle tomato
+* ov03 - Agent representing Right tomato
+* ov10 - Age of the plant (?) At 40-45, starts dropping its fruit, dies at age 50
+
+*Tomato Fruit script 1001 seems to be the "I have been picked/plant has dropped me" script
+* Tomato Fruit ov00 (int) is either state 1 (on the plant) or 0 (off the plant)
+* Tomato Fruit ov01 (agent) is the plant that it came from.
+* Tomato Fruit ov02 (int) is the number of tomato that they were (1 Left 2 Middle 3 Right)
+
+
+
+
+*Install
+
+
+*Tomato Plants
 
 reps rand 5 7
 
@@ -43,11 +64,48 @@ reps rand 2 4
 
 repe
 
+
+* Tomato machine
+
+inst
+
+* Genus Vendor, Plane 400
+new: comp 2 23 50210 "moe_C2toDS_TomatoMachine" 0 0 400
+
+*output (yellow)
+prt: onew 0 "output" "Tomato Machine output" 17 84
+*input (red)
+prt: inew 0 "input" "Tomato Machine input" 27 84 1000
+
+*Mouseable + Activateable + Suffer Collisions + Suffer Physics
+attr 198
+
+*Activate 1 + Activate 2 + Hit
+bhvr 11
+
+*physics
+perm 51
+elas 25
+accg 5
+aero 5
+fric 100
+
+*C2 framerate
+frat 2
+
+*it's in the terrarium beneath the dark blue ocean for now. feel free to move it elsewhere if it gets in the way.
+mvto 2502 49025
+
+
+
+
+*Tomato Plant Constructor Script
+
 scrp 2 4 50200 10
 
 	inst
 
-	attr 192
+	attr 208
 
 	elas 0
 
@@ -56,6 +114,9 @@ scrp 2 4 50200 10
 	perm 60
 
 	accg 4
+
+*very low framerate for the grow anim
+	frat 200
 
 	tick rand 150 250
 
@@ -70,6 +131,7 @@ scrp 2 4 50200 10
 endm
 
 
+*Tomato Plant Timer Script
 
 scrp 2 4 50200 9
 
@@ -245,9 +307,9 @@ scrp 2 4 50200 9
 
 	doif ov10 ge 50
 
-		doif ov01 ne null and ov02 ne null and ov03 ne null
+		inst
 
-			inst
+		doif ov01 ne null and ov02 ne null and ov03 ne null
 
 			lock
 
@@ -269,9 +331,9 @@ scrp 2 4 50200 9
 
 			targ ownr
 
-			frat 200
-
 			pose 6
+
+*play (VERY slow) grow anim
 
 			anim [8 9 10 11 12 13 14]
 
@@ -420,10 +482,13 @@ scrp 2 4 50200 9
 endm
 
 
+*Tomato Constructor Script
 
 scrp 2 8 50200 10
 
 	inst
+
+	core 4 24 11 35
 
 	perm 51
 
@@ -433,7 +498,9 @@ scrp 2 8 50200 10
 
 	puhl -1 24 16
 
+*need to wait a tick or ov00 is read before it's set
 	wait 1
+	inst
 
 	doif ov00 eq 1
 
@@ -463,9 +530,13 @@ scrp 2 8 50200 10
 
 	emit 6 0.15
 
+*low framerate for decay anim
+	frat 75
+
 endm
 
 
+*Tomato Pickup Script
 
 scrp 2 8 50200 4
 
@@ -476,10 +547,12 @@ scrp 2 8 50200 4
 endm
 
 
-
+* Tomato being picked (or old plant dropping it)
 scrp 2 8 50200 1001
 
 	inst
+
+*ov00 1 = still growing on the plant
 
 	doif ov00 eq 1
 
@@ -499,31 +572,31 @@ scrp 2 8 50200 1001
 
 		setv ov00 0
 
-		doif ov02 eq 1
+* tell the mother plant you are being picked by blanking their OV for you
 
-			targ ov01
+* the fact that I am having to write in targ eq null checks here makes me wonder 
+* what situation this script is being triggered wherein a tomato is being 'picked' but there is no longer
+* a mother plant... there might actually be a deeper issue here, or maybe not.
+		targ ov01
 
-			seta ov01 null
+		doif targ ne null
 
-			targ ownr
+			doif mv02 eq 1
 
-		elif ov02 eq 2
+				seta ov01 null
 
-			targ ov01
+			elif mv02 eq 2
 
-			seta ov02 null
+				seta ov02 null
 
-			targ ownr
+			elif mv02 eq 3
 
-		elif ov02 eq 3
-
-			targ ov01
-
-			seta ov03 null
-
-			targ ownr
+				seta ov03 null
+			endi
 
 		endi
+
+		targ ownr
 
 		doif carr eq null
 
@@ -544,11 +617,12 @@ scrp 2 8 50200 1001
 endm
 
 
+* Tomato Timer Script
 
 scrp 2 8 50200 9
 
 
-
+*Don't do anything at night
 	doif time eq 4
 
 		stop
@@ -556,7 +630,7 @@ scrp 2 8 50200 9
 	endi
 
 
-
+* If you are on the plant, grow!
 	doif ov00 eq 1
 
 		doif pose lt 3
@@ -571,27 +645,32 @@ scrp 2 8 50200 9
 
 		else
 
+* If you are on the plant and fully grown, become visible.
+
 			bhvr 48
 
 			attr 227
 
 		endi
 
+* If you are off the plant, and not falling or being carried by a creature or the hand
 	elif ov00 eq 0
 
-		doif carr ne null or fall eq 1
+		doif carr eq pntr or crea carr eq 1 or fall eq 1
 
 			stop
 
 		endi
 
+* And it is not night or dawn
 		doif time ne 4 and time ne 0
 
+* become invisible and break down
 			lock
 
-			frat 75
-
 			attr 211
+
+*play (very slow) decay anim
 
 			anim [0 1 2 3 4]
 
@@ -634,6 +713,7 @@ scrp 2 8 50200 9
 		endi
 
 
+		inst
 
 		esee 2 4 50200
 *don't factor old dying plants in the population check pls -t1ws
@@ -645,11 +725,15 @@ scrp 2 8 50200 9
 
 		next
 
+		slow
+
 		targ ownr
 
 		doif va25 lt 4
 
 			doif va21 gt .302157 and va22 ge .254510 and va23 ge .254510 and va24 ge .254510
+
+				inst
 
 				gsub grow
 
@@ -690,6 +774,7 @@ scrp 2 8 50200 9
 endm
 
 
+*Tomato Eat Script
 
 scrp 2 8 50200 12
 
@@ -700,27 +785,49 @@ scrp 2 8 50200 12
 
 	stim writ from 78 1
 
-	wait 1
+*	wait 1
+*
+*	targ from
+*
+**chem 3 0.5
+*
+**chem 5 0.5
+*
+**chem 12 0.5
+*
+**	chem 149 -.25
+*
+*	wait 1
+*
+*	targ ownr
 
-	targ from
-
-*chem 3 0.5
-
-*chem 5 0.5
-
-*chem 12 0.5
-
-*	chem 149 -.25
-
-	wait 1
-
-	targ ownr
-
+* to ensure creatures don't eat these to extinction, make them invisible after
+* taking a bite and tell them to go directly to seed.
 	doif base ne 17
 		base 17
 		pose 0
-		attr 211
-		emit 6 0
+
+*check if there's any tomatoes in range
+		esee 2 8 50200
+			setv va00 1
+		next
+
+*if you're the last tomato in the area, become invisible to creatures and instantly seed
+		doif va00 = 0
+
+*force a drop on FROM if you're being carried by it (only if its a creature)
+			doif from = carr and crea from = 1
+				wait 4
+				inst
+				targ from
+				drop
+				targ ownr
+			endi
+
+			attr 211
+			emit 6 0
+			tick 10
+		endi
 	else
 		kill ownr
 	endi
@@ -729,19 +836,182 @@ endm
 
 
 
-scrp 2 8 50200 1
+*scrp 2 8 50200 1
+*
+**mesg writ targ 12
+*
+*endm
 
-*mesg writ targ 12
 
-endm
-
-
+*Tomato Collision Script
 
 scrp 2 8 50200 6
 
 	sndc "dr12"
 
 endm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Tomato Machine Push Script
+
+scrp 2 23 50210 1
+
+	inst
+
+*let the creature know they activated a machine
+	stim writ from 90 1
+
+*hand can't click it while it's in use!
+	clac -1
+
+*Send a signal from the specified output port to all connected inputs. 
+	prt: send 0 _p1_
+
+	snde "vend"
+	setv va00 posl
+	setv va01 posy
+
+*16 was placing it inside a wall and making it freak out if it was too close to a wall. we sub the 6 later if TMVT is true.
+*	subv va00 16
+	subv va00 10
+
+	subv va01 9
+
+	anim [0 1 2 3 4 5]
+	over
+
+*make tomatoes and set some necessary params to stop them being weird
+	inst
+	new: simp 2 8 50200 "moe_C2toDS_toms" 23 15 rand 1000 2000
+
+	base 12
+
+	pose 0
+
+	mira rand 0 1
+
+	setv ov00 0
+
+	setv ov02 1
+
+	bhvr 48
+
+	slow
+
+*place it to the left of the ejection port if possible
+	setv va02 va00
+	subv va02 6
+	doif tmvt va02 va01 = 1
+		mvto va02 va01
+	else
+		mvsf va00 va01
+	endi
+
+
+*apply random velocity
+	velo rand -3 -1 -5
+
+	targ ownr
+	anim [6 0]
+
+*hand can click it now it's done animating.
+	clac 0
+
+endm
+
+
+
+*Tomato Machine Pull Script
+
+scrp 2 23 50210 2
+
+*let the creature know they activated a machine
+	stim writ from 90 1
+
+*(activate 2 is the same as activate 1)
+	mesg writ ownr 0
+endm
+
+
+
+*Tomato Machine Input Port Script
+
+scrp 2 23 50210 1000
+*if the signal strength wasn't 0
+	doif _p1_ <> 0
+*run the activate 1 script, but pass the Parameter the Input object sent on.
+		mesg wrt+ ownr 0 _p1_ 0 0
+	endi
+endm
+
+
+
+*Tomato Machine Hit Script
+
+scrp 2 23 50210 3
+	sndc "hit_"
+	velo 0 rand -10 -20
+
+*chance of disconnecting ports when a creature hits it (nahhh...)
+*prt: bang rand 40 80
+
+*let the creature know they hit a machine
+	stim writ from 92 1
+endm
+
+
+
+**(disabled for now because it interrupts other scripts too frequently)
+**Tomato Machine Collision Script
+*
+*scrp 2 23 50210 6
+*
+*	inst
+*
+*	snde "drp6"
+*
+**make sure hand can click it because this script will interrupt the activate script
+*	clac 0
+*
+**if you got interrupted while trying to make a tomato, just try again
+*	doif pose <> 0
+*		mesg writ ownr 0
+*	endi
+*
+*endm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Remove
 
 rscr
 
@@ -758,6 +1028,10 @@ enum 2 8 50200
 
 next
 
+enum 2 23 50210
+	kill targ
+next
+
 
 scrx 2 4 50200 10
 scrx 2 4 50200 9
@@ -769,3 +1043,10 @@ scrx 2 8 50200 9
 scrx 2 8 50200 12
 scrx 2 8 50200 1
 scrx 2 8 50200 6
+
+
+scrx 2 23 50210 1
+scrx 2 23 50210 2
+scrx 2 23 50210 1000
+scrx 2 23 50210 3
+scrx 2 23 50210 6

@@ -10,22 +10,34 @@
 *2 19 50207 - Dust Devil
 
 *The one who screams toned down the scares from thunder and stopped dustdevils from creating mushroom patches.
+*May have changed the mushroom patch fix and actually changed the mushrooms, + other weather tweaks - Verm
 
-new: comp 1 9 50200 "moe_C2toDS_Weather" 1 32 9000
+*NeoDement:
+*Dust Devils don't tick so often (less noisy and very slightly less effective at moving stuff)
+*Dust Devils can't move any objects with sprite size wider or taller than 80
+*Clouds draw in front of all world overlays
+*Clouds have new limits for how high or low they can be in the C2toDS metaroom. This fixes clouds finding their way through the wooden bridge into the area below the incubator room.
+*Toolbar can now be clicked and dragged to move it and supports docking to the bottom and right sides of the screen.
 
-attr 34
+*TODO: RUN A WORLD FOR A LONG TIME AND SEE IF CLOUD PLANE IS EVER NOT 8002!!!
+*plane is 2 below Wolfling Control so we don't draw anything on top of it
+new: comp 1 9 50200 "moe_C2toDS_Weather" 1 32 8998
 
-setv va00 wndh
+*attr 34
 
-subv va00 hght
+*Mouseable + Activateable + Invisible + Floatable + Camera Shy
+attr 310
 
-flto 0 va00
 
-tick 19
+*ticks once straight away but generally will only tick every 20 ticks
+tick 1
 
-*tick 1
+*docked status is bottom right by default (out of the way of the CAOS command line)
+setv name "docked_right" 1
+setv name "docked_bottom" 1
 
-setv name "AmIDocked" 2
+*automatically position toolbar
+mesg writ targ 123
 
 *year PART 1
 
@@ -55,23 +67,12 @@ pat: butt 5 "moe_C2toDS_Weather" 43 4 95 2 -1 [0] 1001 0
 
 
 
-*TEMP CONVERTER*
-
-new: comp 2 19 50200 "moe_C2toDs_weather" 10 0 5001
-
-setv va00 rand 8400 8800
-
-setv va01 rand 47652 47840
-
-mvsf va00 va01
-
-
 
 *random clouds in the sky at start, plus random size! :D
 
-reps rand 5 15
+reps rand 6 15
 
-	new: comp 2 19 50200 "moe_C2toDs_weather" 10 0 5001
+	new: comp 2 19 50200 "moe_C2toDs_weather" 10 0 8002
 
 	setv va00 rand 2300 2820
 
@@ -82,6 +83,227 @@ reps rand 5 15
 	addv ov00 rand 1 5
 
 repe
+
+
+
+
+*Toolbar Activate 1 script (used to click and drag to move it around)
+
+scrp 1 9 50200 1
+
+	inst
+
+*get the pointer position
+	targ pntr
+
+	setv va00 posl
+	setv va01 post
+
+*subtract the position of the window to get screen coords
+	targ ownr
+
+	subv va00 posl
+	subv va01 post
+
+*invert the values to get values flto can make use of
+	negv va00
+	negv va01
+
+*set window to float under cursor
+	frel pntr
+
+	flto va00 va01
+
+*listen for Raw mouse up/unpress events
+	imsk 16
+
+*you can't be picked up by right clicking if you're already being click-dragged
+*(-2 Mouseable)
+
+	setv va00 attr
+
+	andv va00 2
+
+	doif va00 eq 2
+
+		setv va00 attr
+
+		subv va00 2
+
+		attr va00
+
+	endi
+
+endm
+
+
+
+
+
+*Toolbar Raw Mouse Up script (used to stop click and drag movements)
+
+scrp 1 9 50200 77
+
+	inst
+
+*if left mouse button is unpressed
+	doif _p1_ = 1
+
+		inst
+
+*		attr 0
+		setv va00 posl
+		setv va01 post
+
+*		attr 304
+
+*convert to screen space coords by subtracting window left and top from object left and top.
+		subv va00 wndl
+		subv va01 wndt
+
+		frel null
+
+		flto va00 va01
+
+
+*put it back in bounds if it slipped out of bounds
+		call 5 0 0
+
+*don't listen for mouse inputs
+		imsk 0
+
+*allow pickup by right clicking again now you're doing being click-dragged
+*(+2 Mouseable)
+
+		setv va00 attr
+
+		andv va00 2
+
+		doif va00 ne 2
+
+			setv va00 attr
+
+			addv va00 2
+
+			attr va00
+
+		endi
+
+	endi
+
+endm
+
+
+
+
+
+*Toolbar Drop script (also called when releasing from mouse drag)
+*(used to make sure the toolbar is still on screen and Lock it to screen right or bottom)
+
+scrp 1 9 50200 5
+
+	inst
+
+*reset dock vars
+	setv name "docked_right" 0
+	setv name "docked_bottom" 0
+
+*it's poking off the left side of the screen...
+	doif posl < wndl
+
+		mvto wndl post
+
+	endi
+
+*it's poking off the top side of the screen...
+	doif post < wndt
+
+		mvto posl wndt
+
+	endi
+
+*it's poking off the right side of the screen...
+	doif posr > wndr
+
+		setv va02 wndr
+		subv va02 wdth
+*fix because sprite width is a bit wider than it visually seems
+		addv va02 22
+
+		mvto va02 post
+
+*set it to be docked
+		setv name "docked_right" 1
+
+	endi
+
+*it's poking off the bottom side of the screen...
+	doif posb > wndb
+
+		setv va02 wndb
+		subv va02 hght
+
+		mvto posl va02
+
+*set it to be docked
+		setv name "docked_bottom" 1
+
+	endi
+
+endm
+
+
+
+*Toolbar - Window Resized script (used to keep everything on screen and in the correct docked position)
+
+scrp 1 9 50200 123
+
+	inst
+
+*put it back in bounds if it slipped out of bounds
+
+*it's poking off the left side of the screen...
+	doif posl < wndl
+
+		mvto wndl post
+
+	endi
+
+*it's poking off the top side of the screen...
+	doif post < wndt
+
+		mvto posl wndt
+
+	endi
+
+*it's poking off the right side of the screen... or it's docked
+	doif posr > wndr or name "docked_right" = 1
+
+		setv va02 wndr
+		subv va02 wdth
+*fix because sprite width is a bit wider than it visually seems
+		addv va02 22
+
+		mvto va02 post
+
+	endi
+
+*it's poking off the bottom side of the screen... or it's docked
+	doif posb > wndb or name "docked_bottom" = 1
+
+		setv va02 wndb
+		subv va02 hght
+
+		mvto posl va02
+
+	endi
+
+
+endm
+
+
+
+
 
 *Press the Cheese Pot (That comes from a rainbow)
 
@@ -145,7 +367,7 @@ scrp 2 21 50217 9
 
 		new: simp 1 17 50200 "smoke" 5 10 5001
 
-		attr 32
+		attr 48
 
 		mvto va00 va01
 
@@ -167,6 +389,9 @@ scrp 2 21 50217 9
 
 endm
 
+
+*change temperature units (celcius, farenheight etc) by clicking the temp
+
 scrp 1 9 50200 1001
 
 	doif ov00 eq 0
@@ -180,15 +405,19 @@ scrp 1 9 50200 1001
 
 	endi
 
+*tick again immediately so we can see the change
+	tick 1
+
 endm
 
 
 
-
+*Weather Status Bar Timer Script
 
 scrp 1 9 50200 9
 
-
+*will only tick every 20 ticks
+	tick 20
 
 	part 1
 
@@ -212,15 +441,16 @@ scrp 1 9 50200 9
 
 
 
-	doif visi 0 eq 0
-
-		setv va00 wndh
-
-		subv va00 hght
-
-		flto 0 va00
-
-	endi
+*old code to handle toolbar going off screen
+*	doif visi 0 eq 0
+*
+*		setv va00 wndh
+*
+*		subv va00 hght
+*
+*		flto 0 va00
+*
+*	endi
 
 
 
@@ -232,15 +462,8 @@ scrp 1 9 50200 9
 
 *TEMP TELLER*
 
-	targ pntr
-
-	setv va03 posl
-
-	setv va04 post
-
-	targ ownr
-
-	setv va00 prop grap va03 va04 2
+*get temperature at x/y position of pointer
+	setv va00 prop grap mopx mopy 2
 
 
 
@@ -337,19 +560,26 @@ scrp 1 9 50200 9
 
 endm
 
+
+
+*Clouds Constructor Script
+
 scrp 2 19 50200 10
 
-	bhvr 1
+* aiko is changing this to 0 for consistency because weather isn't generally pushable
+* but if we want to make the classic pushable lighting clouds at some point 
+* we could class them as 'bad'??
+	bhvr 0
 
-	dcor 0
+*	dcor 1
 
 *core 10 0 200 250
 
 	core 70 25 150 250
 
 	perm 2
-
-	attr 196
+*Be invisible!
+	attr 212
 
 	accg 0
 
@@ -363,7 +593,8 @@ scrp 2 19 50200 10
 
 	seta ov04 targ
 
-	tick 100
+*tick once immediately (timer script resets this to a sensible value)
+	tick 1
 
 	addv ov00 1
 *Clouds make stuff a bit warmer, only a bit, hopefully not too warm - Verm
@@ -372,6 +603,8 @@ scrp 2 19 50200 10
 endm
 
 
+
+*Clouds Timer Script
 
 scrp 2 19 50200 9
 
@@ -475,7 +708,7 @@ scrp 2 19 50200 9
 
 
 
-*Got the X Chordinate
+*Got the X Coordinate
 
 	setv va01 torx va00
 
@@ -541,7 +774,20 @@ scrp 2 19 50200 9
 
 *if you've hit the ceiling for some reason, come down!*
 
-	doif obst _up_ lt 10
+	setv va99 0
+
+*or if you're too high in general in the c2tods roo,
+
+*put some variance in how high clouds want to be
+	setv va98 47700
+	addv va98 rand -50 50
+
+	doif post < va98 and gmap posl post = game "C2toDS_RoomID"
+		setv va99 1
+	endi
+
+
+	doif obst _up_ lt 10 or va99 eq 1
 
 		setv vely .55
 
@@ -555,7 +801,20 @@ scrp 2 19 50200 9
 
 *If you're hit the floor, go up
 
-	doif obst down le 50
+*or if you're too low in general in the c2tods room
+	setv va99 0
+
+*put some variance in how low clouds can go
+	setv va98 48100
+	addv va98 rand -50 50
+
+
+	doif posb > va98 and gmap posl post = game "C2toDS_RoomID"
+		setv va99 1
+	endi
+
+
+	doif obst down le 50 or va99 eq 1
 
 		setv vely -.55
 
@@ -607,7 +866,7 @@ scrp 2 19 50200 9
 
 *DustDevil
 
-	doif sean eq 1 and va02 ge .7 and pose ge 3
+	doif sean eq 1 and va02 ge .7 and pose ge 3 and rand 1 10 eq 1
 
 		setv va10 0
 
@@ -777,6 +1036,8 @@ endm
 
 
 
+*Clouds Collision Script
+
 scrp 2 19 50200 6
 
 *If you hit a wall, go the other direction*
@@ -809,11 +1070,11 @@ scrp 2 19 50200 6
 
 endm
 
-*Push Cloud!
+*Push Cloud! (pointer only)
 
 scrp 2 19 50200 1
-
-
+*Being careful to not skip a check by rapid clicks - Verm
+	inst
 
 
 
@@ -821,13 +1082,15 @@ scrp 2 19 50200 1
 
 	setv va00 rand 0 6
 
-	doif va00 eq 2
+	doif va00 eq 2 and name "MadeARainbow?" eq 0
 
 		mesg writ targ 1004
 
+		setv name "MadeARainbow?" 1
+
 	endi
 
-
+	slow
 
 	doif pose gt 2
 
@@ -889,7 +1152,7 @@ scrp 2 19 50200 1004
 
 	mvto va00 va01
 
-	attr 32
+	attr 48
 
 	part 100
 
@@ -954,12 +1217,8 @@ scrp 2 19 50200 1001
 		endi
 
 *scare creatures
-
-		esee 4 0 0
-
-			chem 158 .1
-
-		next
+**Might need sway sign
+		sway shou 10 0.1 0 0 0 0 0 0
 
 		targ ownr
 
@@ -1119,7 +1378,7 @@ scrp 2 19 50200 1002
 
 		new: simp 2 19 50201 "moe_C2toDS_weather" 0 23 rand 1000 6000
 
-		attr 192
+		attr 208
 
 		perm rand 49 51
 
@@ -1201,13 +1460,13 @@ scrp 2 19 50200 1003
 
 		addv va00 rand 0 va02
 
-
+		inst
 
 		new: simp 2 19 50202 "moe_C2toDS_weather" 0 9 rand 1000 6000
 
-		bhvr 48
+		bhvr 0
 
-		attr 195
+		attr 211
 
 		aero 3
 
@@ -1227,6 +1486,8 @@ scrp 2 19 50200 1003
 
 		targ ownr
 
+		slow
+
 
 
 	repe
@@ -1240,6 +1501,8 @@ endm
 scrp 2 19 50200 1005
 
 *Dust Devil*
+
+	inst
 
 	setv va01 posx
 
@@ -1346,7 +1609,7 @@ scrp 2 19 50208 9
 
 	new: simp 2 19 50209 "moe_C2toDS_weather" 0 63 5000
 
-	attr 195
+	attr 211
 
 	mvsf va00 va01
 
@@ -1363,18 +1626,24 @@ endm
 scrp 2 19 50201 6
 
 	lock
+	inst
 
-	altr -1 3 0.1250
+*check the rain is in a valid room before you try to alter the room
+	doif grap posx posy ne -1
+
+		altr -1 3 0.1250
 
 *Rain Brings Nutrients
 
-	altr -1 4 0.1250
+		altr -1 4 0.1250
 
 *Rain also Cools
 
-	altr -1 2 -0.01250
+		altr -1 2 -0.01250
 
-	kill targ
+		kill targ
+
+	endi
 
 	unlk
 
@@ -1386,6 +1655,7 @@ scrp 2 19 50201 9
 
 	inst
 
+*check the rain is in a valid room before you try to alter the room
 	doif grap posx posy ne -1
 
 		altr -1 3 0.001000
@@ -1430,21 +1700,21 @@ endm
 
 
 
-*Eat Snowflake
+*Eat Snowflake -- not used because weather is not edible.
 
-scrp 2 19 50202 12
-
-	stim writ from 97 1
-
-	chem 33 .15
-
-	chem 162 .15
-
-	chem 152 .15
-
-	chem 153 -.15
-
-endm
+*scrp 2 19 50202 12
+*
+*	stim writ from 97 1
+*
+*	chem 33 .15
+*
+*	chem 162 .15
+*
+*	chem 152 .15
+*
+*	chem 153 -.15
+*
+*endm
 
 
 
@@ -1453,24 +1723,30 @@ endm
 scrp 2 19 50202 6
 
 	lock
+	inst
 
-	altr -1 3 0.06250
+*check the snow is in a valid room before you try to alter the room
+	doif grap posx posy ne -1
+
+		altr -1 3 0.06250
 
 *Snow Brings Nutrients
 
-	altr -1 4 0.1250
+		altr -1 4 0.1250
 
 *Snow also Cools Considerably
 
-	altr -1 2 -0.00010
+		altr -1 2 -0.00010
 
-	frat 5
+		frat 5
 
-	anim [8 9]
+		anim [8 9]
 
-	over
+		over
 
-	kill targ
+		kill targ
+
+	endi
 
 	unlk
 
@@ -1486,6 +1762,7 @@ scrp 2 19 50202 9
 
 	doif grap posx posy ne -1
 
+*check the snow is in a valid room before you try to alter the room
 		altr -1 3 0.001000
 
 		doif rtyp grap posx posb eq 9
@@ -1557,8 +1834,8 @@ scrp 2 19 50207 10
 	inst
 
 	setv name "dustdevil" 1
-
-	attr 199
+*No carryable, invsi
+	attr 214
 
 	pat: dull 1 "moe_C2toDS_weather" 80 0 0 0
 
@@ -1582,7 +1859,7 @@ scrp 2 19 50207 10
 
 	anim [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 255]
 
-	tick 1
+	tick 3
 
 	sndl "wnd7"
 
@@ -1618,11 +1895,11 @@ scrp 2 19 50207 9
 
 *doif attr eq 194 or attr eq 195 or attr eq 199 or attr eq 198 and accg gt 0 and carr eq null
 
-*Must be Pickupable
+*Must be Carryable - Was set to check mousable before
 
 		setv va02 attr
 
-		andv va02 2
+		andv va02 1
 
 
 
@@ -1638,15 +1915,16 @@ scrp 2 19 50207 9
 
 		andv va04 32
 
-*		to prevent the uprising, don't carry mushrooms
-		doif fmly eq 2 and gnus eq 11 and spcs eq 50209
 
-				setv va05 1
+*don't pick up objects with sprite size wider or taller than 80
+		doif wdth > 80 or hght > 80
+
+			setv va05 1
 
 		endi
 
 
-		doif va04 ne 32 and va02 eq 2 and va03 eq 128 and accg gt 0 and carr eq null and va05 ne 1
+		doif va04 ne 32 and va02 eq 1 and va03 eq 128 and accg gt 0 and carr eq null and va05 ne 1
 
 			doif name "dustdevil" ne 1 and accg ge .1
 
@@ -1774,7 +2052,7 @@ scrp 2 19 50207 9
 
 				setv va02 attr
 
-				andv va02 2
+				andv va02 1
 
 
 
@@ -1784,7 +2062,7 @@ scrp 2 19 50207 9
 
 				andv va03 128
 
-
+*And not floatable
 
 				setv va04 attr
 
